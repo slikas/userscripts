@@ -14,33 +14,34 @@ const autopageObserverConfig =
 };
 function loadNextPage() {
 	console.debug('%c#func: %s', styles.debug, getFuncName());
-	const pageNavSelector = isMobile() ? '.pageNavSimple' : '.pageNav  ';
-	const nextPageHref = getNextPageHref();
+	const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
+	const href_nextPage = getHrefNextPage();
 	if (isInThread()) {
 		let postBodySelector = 'div.block-body.js-replyNewMessageContainer';
-		fetch(nextPageHref)
+		fetch(href_nextPage)
 			.then((data) => data.text())
 			.then(function (nextPageHtml) {
-				window.history.pushState(null, null, nextPageHref);
-				// styling new page
-				const newPageDiv = document.createElement('div');
-				newPageDiv.innerHTML = nextPageHtml;
-				const newPostBody = newPageDiv.querySelector(postBodySelector);
-				document.querySelector(postBodySelector).append('-----NEXT PAGE----');
-				colorizeVerticalBorders(newPostBody);
-				document.querySelector(postBodySelector).appendChild(newPostBody);
+				window.history.pushState(null, null, href_nextPage);
+				{ // append new page
+					const newPageDiv = document.createElement('div');
+					newPageDiv.innerHTML = nextPageHtml;
+					const newPostBody = newPageDiv.querySelector(postBodySelector);
+					document.querySelector(postBodySelector).append('-----NEXT PAGE----');
+					colorizeVerticalBorders(newPostBody);
+					document.querySelector(postBodySelector).appendChild(newPostBody);
+				}
 				// replace navigator bars with new ones
-				document.querySelectorAll(pageNavSelector).forEach(pageNav=>{
-					pageNav.innerHTML = newPageDiv.querySelector(pageNavSelector).innerHTML;
+				document.querySelectorAll(selector_pageNav).forEach(pageNav=>{
+					pageNav.innerHTML = newPageDiv.querySelector(selector_pageNav).innerHTML;
 				})
 			})
 	}
 	if (isInSub()) {
 		let postBodySelector = 'div.structItemContainer-group.js-threadList';
-		fetch(nextPageHref)
+		fetch(href_nextPage)
 			.then((data) => data.text())
 			.then(function (nextPageHtml) {
-				window.history.pushState(null, null, nextPageHref);
+				window.history.pushState(null, null, href_nextPage);
 				// styling new page
 				const newPageDiv = document.createElement('div');
 				newPageDiv.innerHTML = nextPageHtml;
@@ -48,17 +49,17 @@ function loadNextPage() {
 				colorizeVerticalBorders(newPageDiv.querySelector(postBodySelector));
 				document.querySelector(postBodySelector).appendChild(newPageDiv.querySelector(postBodySelector));
 				// replace navigator bars with new ones
-				document.querySelectorAll(pageNavSelector).forEach(pageNav=>{
-					pageNav.innerHTML = newPageDiv.querySelector(pageNavSelector).innerHTML;
+				document.querySelectorAll(selector_pageNav).forEach(pageNav=>{
+					pageNav.innerHTML = newPageDiv.querySelector(selector_pageNav).innerHTML;
 				})
 			})
 	}
 }
-function getNextPageHref() {
-	const nextPageHref = isMobile() ?
+function getHrefNextPage() {
+	const href_nextPage = isMobile() ?
 		document.querySelector('a.pageNavSimple-el.pageNavSimple-el--next').href :
 		document.querySelector('a.pageNav-jump.pageNav-jump--next').href;
-	return nextPageHref;
+	return href_nextPage;
 }
 const autopageObserver = new IntersectionObserver(autopageObserverConfig.callback);
 if (isInSub()) {
