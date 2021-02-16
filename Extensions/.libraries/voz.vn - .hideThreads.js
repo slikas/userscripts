@@ -5,19 +5,18 @@
 // @match        https://voz.vn/f/*
 // @noframes
 // ==/UserScript==
-/* eslint-disable no-lone-blocks */
 /* global shortenToWords */
 const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
-function hideThreadsAndAddIgnoreButtons(sourceHTML){
+function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	const threadInfos = getThreadInfos(sourceHTML);
 	hideThreads(threadInfos);
 	addIgnoreButtons(threadInfos);
 }
 // layer 1
 function hideThreads(threadInfos) {
-	threadInfos.forEach(threadInfo=> hideThread(threadInfo));
+	threadInfos.forEach(threadInfo => hideThread(threadInfo));
 }
 function addIgnoreButtons(threadInfos) {
 	threadInfos.forEach(thread => {
@@ -28,17 +27,19 @@ function addIgnoreButtons(threadInfos) {
 			button.style.position = 'relative';
 			thread.container.firstElementChild.firstElementChild.replaceWith(button);
 		}
-		button.addEventListener('click', function () {
-			const thread = this.parentElement.parentElement;
-			const threadInfo = getThreadInfo(thread);
-			if (!thread.isIgnored) {
-				postToPtanw(threadInfo.id, threadInfo.title);
-				hideThread(thread);
-			} else {
-				alert('already ignored');
-			}
-		});
+		button.addEventListener('click', callback)
 	})
+	
+	function callback() {
+		const thread = this.parentElement.parentElement;
+		const threadInfo = getThreadInfo(thread);
+		if (!thread.isIgnored) {
+			postToPtanw(threadInfo.id, threadInfo.title);
+			hideThread(thread);
+		} else {
+			alert('already ignored');
+		}
+	}
 }
 // layer 2
 function getThreadInfos(sourceHTML) {
