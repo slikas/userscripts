@@ -5,17 +5,19 @@
 // @noframes
 // ==/UserScript==
 colorizeVerticalBorders(document.body)
-const autopageObserverConfig =
-{
-	callback: function (entries, observer) {
-		if (entries[0].intersectionRatio <= 0) return; //target is out of view
-		loadNextPage();
-	}
-};
+const selector_postBody = 'div.block-body.js-replyNewMessageContainer';
+const selector_threadList = 'div.structItemContainer-group.js-threadList';
+const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
+const href_nextPage = getHrefNextPage();
+const AUTOPAGER = {};
+AUTOPAGER.observer = {};
+AUTOPAGER.observer.callback = function (entries, observer) {
+	if (entries[0].intersectionRatio <= 0) return; //target is out of view
+	loadNextPage();
+}
+
 function loadNextPage() {
 	console.debug('%c#func: %s', styles.debug, getFuncName());
-	const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
-	const href_nextPage = getHrefNextPage();
 	if (isInThread()) {
 		let postBodySelector = 'div.block-body.js-replyNewMessageContainer';
 		fetch(href_nextPage)
@@ -23,16 +25,16 @@ function loadNextPage() {
 			.then(function (nextPageHtml) {
 				window.history.pushState(null, null, href_nextPage);
 				{ // append new page
-					const newPageDiv = document.createElement('div');
-					newPageDiv.innerHTML = nextPageHtml;
-					const newPostBody = newPageDiv.querySelector(postBodySelector);
+					var nextPage = document.createElement('div');
+					nextPage.innerHTML = nextPageHtml;
+					const newPostBody = nextPage.querySelector(postBodySelector);
 					document.querySelector(postBodySelector).append('-----NEXT PAGE----');
 					colorizeVerticalBorders(newPostBody);
 					document.querySelector(postBodySelector).appendChild(newPostBody);
 				}
 				// replace navigator bars with new ones
-				document.querySelectorAll(selector_pageNav).forEach(pageNav=>{
-					pageNav.innerHTML = newPageDiv.querySelector(selector_pageNav).innerHTML;
+				document.querySelectorAll(selector_pageNav).forEach(pageNav => {
+					pageNav.innerHTML = nextPage.querySelector(selector_pageNav).innerHTML;
 				})
 			})
 	}
@@ -43,14 +45,14 @@ function loadNextPage() {
 			.then(function (nextPageHtml) {
 				window.history.pushState(null, null, href_nextPage);
 				// styling new page
-				const newPageDiv = document.createElement('div');
-				newPageDiv.innerHTML = nextPageHtml;
+				const nextPage = document.createElement('div');
+				nextPage.innerHTML = nextPageHtml;
 				document.querySelector(postBodySelector).append('-------NEXT PAGE-----');
-				colorizeVerticalBorders(newPageDiv.querySelector(postBodySelector));
-				document.querySelector(postBodySelector).appendChild(newPageDiv.querySelector(postBodySelector));
+				colorizeVerticalBorders(nextPage.querySelector(postBodySelector));
+				document.querySelector(postBodySelector).appendChild(nextPage.querySelector(postBodySelector));
 				// replace navigator bars with new ones
-				document.querySelectorAll(selector_pageNav).forEach(pageNav=>{
-					pageNav.innerHTML = newPageDiv.querySelector(selector_pageNav).innerHTML;
+				document.querySelectorAll(selector_pageNav).forEach(pageNav => {
+					pageNav.innerHTML = nextPage.querySelector(selector_pageNav).innerHTML;
 				})
 			})
 	}
@@ -61,13 +63,13 @@ function getHrefNextPage() {
 		document.querySelector('a.pageNav-jump.pageNav-jump--next').href;
 	return href_nextPage;
 }
-const autopageObserver = new IntersectionObserver(autopageObserverConfig.callback);
+AUTOPAGER.observer.main = new IntersectionObserver(AUTOPAGER.observer.callback);
 if (isInSub()) {
 	try { document.querySelector('.structItemContainer-group--sticky').remove(); } catch { };
-	autopageObserverConfig.target = document.querySelector('.p-breadcrumbs.p-breadcrumbs--bottom');
-	autopageObserver.observe(autopageObserverConfig.target);
+	AUTOPAGER.observer.target = document.querySelector('.p-breadcrumbs.p-breadcrumbs--bottom');
+	AUTOPAGER.observer.main.observe(AUTOPAGER.observer.target);
 }
 if (isInThread()) {
-	autopageObserverConfig.target = document.querySelector('.block-outer.block-outer--after');
-	autopageObserver.observe(autopageObserverConfig.target);
+	AUTOPAGER.observer.target = document.querySelector('.block-outer.block-outer--after');
+	AUTOPAGER.observer.main.observe(AUTOPAGER.observer.target);
 }
