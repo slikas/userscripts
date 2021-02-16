@@ -22,6 +22,8 @@ function appendNextPage(nextPageHtml, selector) {
 	document.querySelector(selector).append('-----NEXT PAGE----');
 	colorizeVerticalBorders(nextPage);
 	document.querySelector(selector).appendChild(nextPage);
+
+	hideThreadsAndAddIgnoreButtons(nextPage);
 }
 function loadNextPage() {
 	console.debug('%c#func: %s', styles.debug, getFuncName());
