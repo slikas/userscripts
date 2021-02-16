@@ -1,0 +1,63 @@
+///////////////
+voz.vn##.p-description > .listInline--bullet.listInline
+voz.vn##div.p-nav-smallLogo
+! voz.vn##div.structItem-minor
+
+voz.vn##[data-xf-init="quick-thread ajax-submit draft"]
+voz.vn##div.structItem-cell.structItem-cell--meta > dl:nth-child(2)
+voz.vn##div.block-outer:nth-of-type(1) > .block-outer-opposite
+voz.vn###footer
+voz.vn##.actionBar-action--report.actionBar-action
+voz.vn##.actionBar-action--reaction
+
+voz.vn##.message-attribution-opposite.message-attribution-opposite--list > li:first-child
+
+! 2021-02-10 https://voz.vn
+voz.vn##.p-header
+voz.vn##.p-body-sidebar__container
+voz.vn##.p-sectionLinks
+voz.vn##.hScroller.p-nav-scroller
+
+
+//////////////////
+o.voz.vn##div.row:nth-of-type(1)
+o.voz.vn##div.row:nth-of-type(3)
+o.voz.vn##.container > .tborder
+o.voz.vn##table:nth-of-type(4)
+o.voz.vn##div[id^="post_message_"] + div
+o.voz.vn##div[id^="post_message_"] + div + div
+o.voz.vn##hr[size="1"]
+
+////////////////
+reddit.com##span.Intercourse.smaller-margin.PostFooter__share 
+
+/////////
+vnexpress.net##ul.social_left > li:first-child
+vnexpress.net##ul.social_left > li:nth-child(2)
+vnexpress.net###myvne_taskbar
+///////////////////////
+www.badbreathhalitosis.com##.headerbar
+www.badbreathhalitosis.com##.newslettersubscribe
+www.badbreathhalitosis.com##[href="https://www.badbreathhalitosis.com/ebook"]
+
+
+///////////
+forum.xda-developers.com##div.p-description
+forum.xda-developers.com##div.uix_stickyContainerOuter
+forum.xda-developers.com##.notices
+forum.xda-developers.com##.p-sectionLinks
+forum.xda-developers.com##.p-body-sidebar
+forum.xda-developers.com##.block-outer-opposite
+forum.xda-developers.com##.block-filterBar
+
+! 2021-02-07 https://devconnected.com
+devconnected.com##.penci-menu-hbg-left.penci-vernav-show.penci-menu-hbg
+
+! 2021-02-10 https://www.amazon.com
+www.amazon.com##.navFooterDescLine.navFooterLinkLine.navFooterLine
+www.amazon.com##.nav-sprite-v1.navLeftFooter
+www.amazon.com###a-page > .copilot-secure-display
+www.amazon.com##.cr-solicitation.a-section
+www.amazon.com###rightCol
+www.amazon.com##.a-link-expander.a-link-normal.a-spacing-top-micro.a-spacing-small.a-size-small
+www.amazon.com###promoGrid
