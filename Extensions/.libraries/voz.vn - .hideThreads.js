@@ -8,55 +8,19 @@
 /* eslint-disable no-lone-blocks */
 /* global shortenToWords */
 const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
-hideThreads(document.body);
-function hideThreads(sourceHTML) {
-	const threadIds = getThreadIdsFromPtanw_BY_ASYNC();
-	console.debug(threadIds);
-	/*Promise {<pending>}
-	[[PromiseState]]: "fulfilled"
-	[[PromiseResult]]: Array(5) 
-	*/
-	let threads = getThreads(sourceHTML);
-	addIgnoreThreadButtons(sourceHTML, threads);
+hideThreadsAndAddIgnoreButtons(document.body);
+// layer 0
+function hideThreadsAndAddIgnoreButtons(sourceHTML){
+	const threadInfos = getThreadInfos(sourceHTML);
+	hideThreads(threadInfos);
+	addIgnoreButtons(threadInfos);
 }
-function getThreads(sourceHTML) {
-	const threadsList = sourceHTML.querySelectorAll('div.structItemContainer-group.js-threadList>div');
-	let threads = [];
-	threadsList.forEach(thread => {
-		const threadInfo = getThreadInfo(thread);
-		threads.push(threadInfo);
-	})
-	return threads;
+// layer 1
+function hideThreads(threadInfos) {
+	threadInfos.forEach(threadInfo=> hideThread(threadInfo));
 }
-function getThreadInfo(thread) {
-	const threadInfo = {};
-	{ // fill info
-		threadInfo.id = thread.classList[thread.classList.length - 1].split('-')[2];
-		threadInfo.title = thread.querySelector('a[data-preview-url]').textContent;
-		threadInfo.url = thread.querySelector('a[data-preview-url]').href;
-		threadInfo.container = thread;
-	}
-	return threadInfo;
-}
-function postToPtanw(threadId = -1, title = 'none') {
-	fetch('https://climex.pythonanywhere.com/json/get-thread-ids', {
-		method: 'POST',
-		credentials: 'include',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			thread_id: parseInt(threadId),
-			title: shortenToWords(title, 30)
-		})
-	}).then(response => {
-		return response.json()
-	}).then(data => {
-		console.log(data);
-	});
-}
-function addIgnoreThreadButtons(sourceHTML) {
-	getThreads(sourceHTML).forEach(thread => {
+function addIgnoreButtons(threadInfos) {
+	threadInfos.forEach(thread => {
 		const button = document.createElement('button');
 		{ // styling button
 			button.textContent = 'hide';
@@ -69,18 +33,23 @@ function addIgnoreThreadButtons(sourceHTML) {
 			const threadInfo = getThreadInfo(thread);
 			if (!thread.isIgnored) {
 				postToPtanw(threadInfo.id, threadInfo.title);
-				disableThread(thread);
+				hideThread(thread);
 			} else {
 				alert('already ignored');
 			}
 		});
 	})
 }
-function disableThread(thread) {
-	thread.style.opacity = '0.3';
-	thread.isIgnored = true;
+// layer 2
+function getThreadInfos(sourceHTML) {
+	const threadsList = sourceHTML.querySelectorAll('div.structItemContainer-group.js-threadList>div');
+	let threads = [];
+	threadsList.forEach(thread => {
+		const threadInfo = getThreadInfo(thread);
+		threads.push(threadInfo);
+	})
+	return threads;
 }
-
 function getThreadIdsFromPtanw_BY_CHAINING_THEN() {
 	fetch(hrefToGetJson).
 		then(response => response.json()).
@@ -96,6 +65,40 @@ async function getThreadIdsFromPtanw_BY_ASYNC() {
 	console.debug(threadInfos);
 	return threadInfos.ids;
 }
+// layer 3
+function getThreadInfo(thread) {
+	const threadInfo = {};
+	{ // fill info
+		threadInfo.id = thread.classList[thread.classList.length - 1].split('-')[2];
+		threadInfo.title = thread.querySelector('a[data-preview-url]').textContent;
+		threadInfo.url = thread.querySelector('a[data-preview-url]').href;
+		threadInfo.container = thread;
+	}
+	return threadInfo;
+}
+function hideThread(threadInfo) {
+	//threadInfo.style.opacity = '0.3';
+	//threadInfo.isIgnored = true;
+}
+function postToPtanw(threadId = -1, title = 'none') {
+	fetch(hrefToGetJson, {
+		method: 'POST',
+		credentials: 'include',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			thread_id: parseInt(threadId),
+			title: shortenToWords(title, 30)
+		})
+	}).then(response => {
+		return response.json()
+	}).then(data => {
+		console.log(data);
+	});
+}
+
+
 /*
 function removeThreadsByLocalStorageId(sourceHTML, threadIdsToHide) {
 	threadIdsToHide.forEach(threadId => {
