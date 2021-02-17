@@ -18,7 +18,7 @@ function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	
 	(async () => {
 		HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
-		//hideThreads(threadInfoList, HIDE_THREADS.ids);
+		hideThreads(threadInfoList);
 		localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 	})();
 
