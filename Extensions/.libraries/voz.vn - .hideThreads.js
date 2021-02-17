@@ -10,30 +10,30 @@ const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
-	const threadInfos = getThreadInfos(sourceHTML);
-	hideThreads(threadInfos, getThreadIdsToHideFromLocalStorage());
-	addIgnoreButtons(threadInfos);
+	const threadInfoList = getThreadInfoList(sourceHTML);
+	hideThreads(threadInfoList, getThreadIdsToHideFromLocalStorage());
+	addIgnoreButtons(threadInfoList);
 	(async () => {
 		let threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
-		//hideThreads(threadInfos, threadIds);
+		//hideThreads(threadInfoList, threadIds);
 		localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
 	})();
 }
 // layer 1
-function hideThreads(threadInfos, threadIds) {
-	threadInfos.forEach(threadInfo => {
+function hideThreads(threadInfoList, threadIds) {
+	threadInfoList.forEach(threadInfo => {
 		if (!threadIds.includes(parseInt(threadInfo.id))) return;
 		hideThread(threadInfo);
 	})
 }
-function addIgnoreButtons(threadInfos) {
-	threadInfos.forEach(thread => {
+function addIgnoreButtons(threadInfoList) {
+	threadInfoList.forEach(threadInfo => {
 		const button = document.createElement('button');
 		{ // styling button
 			button.textContent = 'hide';
 			button.style.borderRadius = '4px';
 			button.style.position = 'relative';
-			thread.container.firstElementChild.firstElementChild.replaceWith(button);
+			threadInfo.container.firstElementChild.firstElementChild.replaceWith(button);
 		}
 		button.addEventListener('click', callback)
 	})
@@ -50,7 +50,7 @@ function addIgnoreButtons(threadInfos) {
 	}
 }
 // layer 2
-function getThreadInfos(sourceHTML) {
+function getThreadInfoList(sourceHTML) {
 	const threadsList = sourceHTML.querySelectorAll('div.structItemContainer-group.js-threadList>div');
 	let threads = [];
 	threadsList.forEach(thread => {
@@ -61,18 +61,16 @@ function getThreadInfos(sourceHTML) {
 }
 async function getThreadIdsFromPtanw_BY_ASYNC() {
 	const response = await fetch(hrefToGetJson);
-	const threadInfos = await response.json();
-	return threadInfos.ids;
+	const threadInfoList = await response.json();
+	return threadInfoList.ids;
 }
 // layer 3
 function getThreadInfo(thread) {
 	const threadInfo = {};
-	{ // fill info
-		threadInfo.id = thread.classList[thread.classList.length - 1].split('-')[2];
-		threadInfo.title = thread.querySelector('a[data-preview-url]').textContent;
-		threadInfo.url = thread.querySelector('a[data-preview-url]').href;
-		threadInfo.container = thread;
-	}
+	threadInfo.id = thread.classList[thread.classList.length - 1].split('-')[2];
+	threadInfo.title = thread.querySelector('a[data-preview-url]').textContent;
+	threadInfo.url = thread.querySelector('a[data-preview-url]').href;
+	threadInfo.container = thread;
 	return threadInfo;
 }
 function hideThread(threadInfo) {
@@ -96,16 +94,6 @@ function postToPtanw(threadId = -1, title = 'none') {
 		console.log(data);
 	});
 }
-
-
-/*
-function removeThreadsByLocalStorageId(sourceHTML, threadIdsToHide) {
-	threadIdsToHide.forEach(threadId => {
-		try { sourceHTML.querySelector('.js-threadListItem-' + threadId).remove(); } catch (error) { };
-	})
-}
 function getThreadIdsToHideFromLocalStorage() {
 	return JSON.parse(localStorage.threadIdsToHide || null) || [];
 }
-*/
-//localStorage.setItem('threadIdsToHide', JSON.stringify(threadIdsToHide));
