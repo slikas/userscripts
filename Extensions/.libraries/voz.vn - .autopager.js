@@ -8,7 +8,6 @@ colorizeVerticalBorders(document.body)
 const selector_postBody = 'div.block-body.js-replyNewMessageContainer';
 const selector_threadList = 'div.structItemContainer-group.js-threadList';
 const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
-const href_nextPage = getHrefNextPage();
 const AUTOPAGER = {};
 AUTOPAGER.observer = {};
 AUTOPAGER.observer.callback = function (entries, observer) {
@@ -16,31 +15,34 @@ AUTOPAGER.observer.callback = function (entries, observer) {
 	loadNextPage();
 }
 function appendNextPage(nextPageHtml, selector) {
+	let parser = new DOMParser();
+	let doc = parser.parseFromString(nextPageHtml, 'text/html');
 	let nextPage = document.createElement('div');
-	nextPage.innerHTML = nextPageHtml;
-	nextPage = nextPage.querySelector(selector);
+	let nextPageNav = doc.querySelector(selector_pageNav);
+	document.querySelectorAll(selector_pageNav).forEach(pageNav => {
+		pageNav.innerHTML = nextPageNav.innerHTML;
+	})
+	nextPage = doc.querySelector(selector);
+	
 	document.querySelector(selector).append('-----NEXT PAGE----');
-	colorizeVerticalBorders(nextPage);
 	document.querySelector(selector).appendChild(nextPage);
+	colorizeVerticalBorders(nextPage);
 
 	hideThreadsAndAddIgnoreButtons(nextPage);
 }
 function loadNextPage() {
-	console.debug('%c#func: %s', styles.debug, getFuncName());
+	//console.debug('%c#func: %s', styles.debug, getFuncName());
+	const href_nextPage = getHrefNextPage();
+	window.history.pushState(null, null, href_nextPage);
 	if (isInThread()) {
 		fetch(href_nextPage).then((data) => data.text()).then(function (nextPageHtml) {
-			window.history.pushState(null, null, href_nextPage);
 			appendNextPage(nextPageHtml, selector_postBody);
-			/*//replace navigator bars with new ones
-			document.querySelectorAll(selector_pageNav).forEach(pageNav => {
-				pageNav.innerHTML = nextPage.querySelector(selector_pageNav).innerHTML;
-			})*/
+
 		})
 	}
 	if (isInSub()) {
 		fetch(href_nextPage).then((data) => data.text()).then(function (nextPageHtml) {
-			window.history.pushState(null, null, href_nextPage);
-			appendNextPage(nextPageHtml, selector_threadList);// replace navigator bars with new ones
+			appendNextPage(nextPageHtml, selector_threadList);
 		})
 	}
 }
