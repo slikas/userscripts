@@ -11,11 +11,12 @@ hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	const threadInfos = getThreadInfos(sourceHTML);
+	hideThreads(threadInfos, getThreadIdsToHideFromLocalStorage());
 	addIgnoreButtons(threadInfos);
 	(async () => {
 		let threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
-		console.debug(threadIds);
-		hideThreads(threadInfos, threadIds);
+		//hideThreads(threadInfos, threadIds);
+		localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
 	})();
 }
 // layer 1
