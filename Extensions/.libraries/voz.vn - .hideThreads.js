@@ -11,12 +11,19 @@ hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	const threadInfos = getThreadInfos(sourceHTML);
-	hideThreads(threadInfos);
 	addIgnoreButtons(threadInfos);
+	(async () => {
+		let threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
+		console.debug(threadIds);
+		hideThreads(threadInfos, threadIds);
+	})();
 }
 // layer 1
-function hideThreads(threadInfos) {
-	threadInfos.forEach(threadInfo => hideThread(threadInfo));
+function hideThreads(threadInfos, threadIds) {
+	threadInfos.forEach(threadInfo => {
+		if (!threadIds.includes(parseInt(threadInfo.id))) return;
+		hideThread(threadInfo);
+	})
 }
 function addIgnoreButtons(threadInfos) {
 	threadInfos.forEach(thread => {
@@ -29,7 +36,7 @@ function addIgnoreButtons(threadInfos) {
 		}
 		button.addEventListener('click', callback)
 	})
-	
+
 	function callback() {
 		const thread = this.parentElement.parentElement;
 		const threadInfo = getThreadInfo(thread);
@@ -51,19 +58,9 @@ function getThreadInfos(sourceHTML) {
 	})
 	return threads;
 }
-function getThreadIdsFromPtanw_BY_CHAINING_THEN() {
-	fetch(hrefToGetJson).
-		then(response => response.json()).
-		then(threadInfos => {
-			console.debug(threadInfos);
-			console.debug(threadInfos.ids);
-			return threadInfos.ids
-		})
-}
 async function getThreadIdsFromPtanw_BY_ASYNC() {
 	const response = await fetch(hrefToGetJson);
 	const threadInfos = await response.json();
-	console.debug(threadInfos);
 	return threadInfos.ids;
 }
 // layer 3
@@ -78,8 +75,8 @@ function getThreadInfo(thread) {
 	return threadInfo;
 }
 function hideThread(threadInfo) {
-	//threadInfo.style.opacity = '0.3';
-	//threadInfo.isIgnored = true;
+	threadInfo.container.style.opacity = '0.3';
+	threadInfo.isIgnored = true;
 }
 function postToPtanw(threadId = -1, title = 'none') {
 	fetch(hrefToGetJson, {
