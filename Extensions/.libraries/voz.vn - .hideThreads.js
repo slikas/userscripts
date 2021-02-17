@@ -7,7 +7,8 @@
 // ==/UserScript==
 /* global shortenToWords */
 const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
-let threadIds =[];
+const HIDE_THREADS = {}
+HIDE_THREADS.ids =[];
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
@@ -15,15 +16,15 @@ function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	hideThreads(threadInfoList, getThreadIdsToHideFromLocalStorage());
 	addIgnoreButtons(threadInfoList);
 	(async () => {
-		threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
-		//hideThreads(threadInfoList, threadIds);
-		localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
+		HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
+		//hideThreads(threadInfoList, HIDE_THREADS.ids);
+		localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 	})();
 }
 // layer 1
-function hideThreads(threadInfoList, threadIds) {
+function hideThreads(threadInfoList) {
 	threadInfoList.forEach(threadInfo => {
-		if (!threadIds.includes(parseInt(threadInfo.id))) return;
+		if (!HIDE_THREADS.ids.includes(parseInt(threadInfo.id))) return;
 		hideThreadAndFlag(threadInfo);
 	})
 }
@@ -44,8 +45,8 @@ function addIgnoreButtons(threadInfoList) {
 		} else {
 			postToPtanw(threadInfo.id, threadInfo.title);
 			hideThreadAndFlag(threadInfo);
-			threadIds.push(threadInfo.id);
-			localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
+			HIDE_THREADS.ids.push(threadInfo.id);
+			localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 		}
 	}
 }
