@@ -8,6 +8,7 @@ colorizeVerticalBorders(document.body)
 const selector_postBody = 'div.block-body.js-replyNewMessageContainer';
 const selector_threadList = 'div.structItemContainer-group.js-threadList';
 const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
+const selector_nextPage = isInThread()?selector_postBody:selector_threadList;
 const AUTOPAGER = {};
 AUTOPAGER.observer = {};
 AUTOPAGER.observer.callback = function (entries, observer) {
@@ -23,7 +24,7 @@ function appendNextPage(nextPageHtml, selector) {
 		pageNav.innerHTML = nextPageNav.innerHTML;
 	})
 	nextPage = doc.querySelector(selector);
-	
+
 	document.querySelector(selector).append('-----NEXT PAGE----');
 	document.querySelector(selector).appendChild(nextPage);
 	colorizeVerticalBorders(nextPage);
@@ -32,19 +33,12 @@ function appendNextPage(nextPageHtml, selector) {
 }
 function loadNextPage() {
 	//console.debug('%c#func: %s', styles.debug, getFuncName());
-	const href_nextPage = getHrefNextPage();
-	window.history.pushState(null, null, href_nextPage);
-	if (isInThread()) {
-		fetch(href_nextPage).then((data) => data.text()).then(function (nextPageHtml) {
-			appendNextPage(nextPageHtml, selector_postBody);
-
-		})
-	}
-	if (isInSub()) {
-		fetch(href_nextPage).then((data) => data.text()).then(function (nextPageHtml) {
-			appendNextPage(nextPageHtml, selector_threadList);
-		})
-	}
+	//window.history.pushState(null, null, href_nextPage);
+	(async () => {
+		const response = await fetch(getHrefNextPage());
+		const textResponse = await response.text();
+		appendNextPage(textResponse, selector_nextPage);
+	})();
 }
 function getHrefNextPage() {
 	const href_nextPage = isMobile() ?
