@@ -7,6 +7,7 @@
 // ==/UserScript==
 /* global shortenToWords */
 const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
+let threadIds =[];
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
@@ -14,7 +15,7 @@ function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	hideThreads(threadInfoList, getThreadIdsToHideFromLocalStorage());
 	addIgnoreButtons(threadInfoList);
 	(async () => {
-		let threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
+		threadIds = await getThreadIdsFromPtanw_BY_ASYNC();
 		//hideThreads(threadInfoList, threadIds);
 		localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
 	})();
@@ -23,7 +24,7 @@ function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 function hideThreads(threadInfoList, threadIds) {
 	threadInfoList.forEach(threadInfo => {
 		if (!threadIds.includes(parseInt(threadInfo.id))) return;
-		hideThread(threadInfo);
+		hideThreadAndFlag(threadInfo);
 	})
 }
 function addIgnoreButtons(threadInfoList) {
@@ -35,17 +36,16 @@ function addIgnoreButtons(threadInfoList) {
 			button.style.position = 'relative';
 			threadInfo.container.firstElementChild.firstElementChild.replaceWith(button);
 		}
-		button.addEventListener('click', callback)
+		button.addEventListener('click', callback.bind(event, threadInfo));
 	})
-
-	function callback() {
-		const thread = this.parentElement.parentElement;
-		const threadInfo = getThreadInfo(thread);
-		if (!thread.isIgnored) {
-			postToPtanw(threadInfo.id, threadInfo.title);
-			hideThread(thread);
-		} else {
+	function callback(threadInfo) {
+		if (threadInfo.isIgnored) {
 			alert('already ignored');
+		} else {
+			postToPtanw(threadInfo.id, threadInfo.title);
+			hideThreadAndFlag(threadInfo);
+			threadIds.push(threadInfo.id);
+			localStorage.setItem('threadIdsToHide', JSON.stringify(threadIds));
 		}
 	}
 }
@@ -73,7 +73,7 @@ function getThreadInfo(thread) {
 	threadInfo.container = thread;
 	return threadInfo;
 }
-function hideThread(threadInfo) {
+function hideThreadAndFlag(threadInfo) {
 	threadInfo.container.style.opacity = '0.3';
 	threadInfo.isIgnored = true;
 }
