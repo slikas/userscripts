@@ -6,20 +6,23 @@
 // @noframes
 // ==/UserScript==
 /* global shortenToWords */
-const hrefToGetJson = 'https://climex.pythonanywhere.com/json/get-thread-ids';
-const HIDE_THREADS = {}
+HIDE_THREADS = {}
+HIDE_THREADS.hrefJSON = 'https://climex.pythonanywhere.com/json/get-thread-ids';
 HIDE_THREADS.ids =[];
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	const threadInfoList = getThreadInfoList(sourceHTML);
-	hideThreads(threadInfoList, getThreadIdsToHideFromLocalStorage());
-	addIgnoreButtons(threadInfoList);
+	HIDE_THREADS.ids = getThreadIdsToHideFromLocalStorage();
+	hideThreads(threadInfoList);
+	
 	(async () => {
 		HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
 		//hideThreads(threadInfoList, HIDE_THREADS.ids);
 		localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 	})();
+
+	addIgnoreButtons(threadInfoList);
 }
 // layer 1
 function hideThreads(threadInfoList) {
@@ -27,6 +30,8 @@ function hideThreads(threadInfoList) {
 		if (!HIDE_THREADS.ids.includes(parseInt(threadInfo.id))) return;
 		hideThreadAndFlag(threadInfo);
 	})
+}
+async function hideThreadsByPtawn(){
 }
 function addIgnoreButtons(threadInfoList) {
 	threadInfoList.forEach(threadInfo => {
@@ -45,7 +50,7 @@ function addIgnoreButtons(threadInfoList) {
 		} else {
 			postToPtanw(threadInfo.id, threadInfo.title);
 			hideThreadAndFlag(threadInfo);
-			HIDE_THREADS.ids.push(threadInfo.id);
+			HIDE_THREADS.ids.push(parseInt(threadInfo.id));
 			localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 		}
 	}
@@ -61,7 +66,7 @@ function getThreadInfoList(sourceHTML) {
 	return threads;
 }
 async function getThreadIdsFromPtanw_BY_ASYNC() {
-	const response = await fetch(hrefToGetJson);
+	const response = await fetch(HIDE_THREADS.hrefJSON);
 	const threadInfoList = await response.json();
 	return threadInfoList.ids;
 }
@@ -79,7 +84,7 @@ function hideThreadAndFlag(threadInfo) {
 	threadInfo.isIgnored = true;
 }
 function postToPtanw(threadId = -1, title = 'none') {
-	fetch(hrefToGetJson, {
+	fetch(HIDE_THREADS.hrefJSON, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
