@@ -8,82 +8,83 @@
 /* global shortenToWords */
 HIDE_THREADS = {}
 HIDE_THREADS.hrefJSON = 'https://climex.pythonanywhere.com/json/get-thread-ids';
-HIDE_THREADS.ids =[];
+HIDE_THREADS.ids = [];
 hideThreadsAndAddIgnoreButtons(document.body);
 // layer 0
 function hideThreadsAndAddIgnoreButtons(sourceHTML) {
-	const threadInfoList = getThreadInfoList(sourceHTML);
+	const threadList = getThreadList(sourceHTML);
 	HIDE_THREADS.ids = getThreadIdsToHideFromLocalStorage();
-	hideThreads(threadInfoList);
-	
+	hideThreads(threadList);
+
 	(async () => {
 		HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
-		hideThreads(threadInfoList);
+		hideThreads(threadList);
 		localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 	})();
 
-	addIgnoreButtons(threadInfoList);
+	addIgnoreButtons(threadList);
 }
 // layer 1
-function hideThreads(threadInfoList) {
-	threadInfoList.forEach(threadInfo => {
-		if (!HIDE_THREADS.ids.includes(parseInt(threadInfo.id))) return;
-		hideThreadAndFlag(threadInfo);
+function hideThreads(threadList) {
+	threadList.forEach(thread => {
+		if (!HIDE_THREADS.ids.includes(parseInt(thread.id))) return;
+		hideThreadAndFlag(thread);
 	})
 }
-async function hideThreadsByPtawn(){
+async function hideThreadsByPtawn() {
 }
-function addIgnoreButtons(threadInfoList) {
-	threadInfoList.forEach(threadInfo => {
-		const button = document.createElement('button');
-		{ // styling button
-			button.textContent = 'hide';
-			button.style.borderRadius = '4px';
-			button.style.position = 'relative';
-			threadInfo.container.firstElementChild.firstElementChild.replaceWith(button);
-		}
-		button.addEventListener('click', callback.bind(event, threadInfo));
+function addIgnoreButtons(threadList) {
+	threadList.forEach(thread => {
+		const button = createIgnoreButton();
+		thread.container.firstElementChild.firstElementChild.replaceWith(button);
+		button.addEventListener('click', callback.bind(event, thread));
 	})
-	function callback(threadInfo) {
-		if (threadInfo.isIgnored) {
+	// helper functions
+	function callback(thread) {
+		if (thread.isIgnored) {
 			alert('already ignored');
 		} else {
-			postToPtanw(threadInfo.id, threadInfo.title);
-			hideThreadAndFlag(threadInfo);
-			HIDE_THREADS.ids.push(parseInt(threadInfo.id));
+			postThreadToPtanw(thread.id, thread.title);
+			hideThreadAndFlag(thread);
+			HIDE_THREADS.ids.push(parseInt(thread.id));
 			localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 		}
 	}
+	function createIgnoreButton() {
+		const button = document.createElement('button');
+		button.textContent = 'hide';
+		button.style.borderRadius = '4px';
+		button.style.position = 'relative';
+		return button;
+	}
 }
 // layer 2
-function getThreadInfoList(sourceHTML) {
-	const threadsList = sourceHTML.querySelectorAll('div.structItemContainer-group.js-threadList>div');
-	let threads = [];
-	threadsList.forEach(thread => {
-		const threadInfo = getThreadInfo(thread);
-		threads.push(threadInfo);
+function getThreadList(sourceHTML) {
+	const threadList = [];
+	sourceHTML.querySelectorAll('div.structItemContainer-group.js-threadList>div').forEach(thread => {
+		threadList.push(getThreadInfo(thread));
 	})
-	return threads;
+	return threadList;
 }
 async function getThreadIdsFromPtanw_BY_ASYNC() {
 	const response = await fetch(HIDE_THREADS.hrefJSON);
-	const threadInfoList = await response.json();
-	return threadInfoList.ids;
+	const threadList = await response.json();
+	return threadList.ids;
 }
 // layer 3
 function getThreadInfo(thread) {
-	const threadInfo = {};
-	threadInfo.id = thread.classList[thread.classList.length - 1].split('-')[2];
-	threadInfo.title = thread.querySelector('a[data-preview-url]').textContent;
-	threadInfo.url = thread.querySelector('a[data-preview-url]').href;
-	threadInfo.container = thread;
-	return threadInfo;
+	const info = {};
+	info.id = thread.classList[thread.classList.length - 1].split('-')[2];
+	info.title = thread.querySelector('a[data-preview-url]').textContent;
+	info.url = thread.querySelector('a[data-preview-url]').href;
+	info.container = thread;
+	return info;
 }
-function hideThreadAndFlag(threadInfo) {
-	threadInfo.container.style.opacity = '0.3';
-	threadInfo.isIgnored = true;
+function hideThreadAndFlag(thread) {
+	thread.container.style.opacity = '0.3';
+	thread.isIgnored = true;
 }
-function postToPtanw(threadId = -1, title = 'none') {
+function postThreadToPtanw(threadId = -1, title = 'none') {
 	fetch(HIDE_THREADS.hrefJSON, {
 		method: 'POST',
 		credentials: 'include',
