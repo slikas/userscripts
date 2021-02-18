@@ -15,13 +15,7 @@ function hideThreadsAndAddIgnoreButtons(sourceHTML) {
 	const threadList = getThreadList(sourceHTML);
 	HIDE_THREADS.ids = getThreadIdsToHideFromLocalStorage();
 	hideThreads(threadList);
-
-	(async () => {
-		HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
-		hideThreads(threadList);
-		localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
-	})();
-
+	hideThreadsByPtawn(threadList);
 	addIgnoreButtons(threadList);
 }
 // layer 1
@@ -31,7 +25,10 @@ function hideThreads(threadList) {
 		hideThreadAndFlag(thread);
 	})
 }
-async function hideThreadsByPtawn() {
+async function hideThreadsByPtawn(threadList) {
+	HIDE_THREADS.ids = await getThreadIdsFromPtanw_BY_ASYNC();
+	hideThreads(threadList);
+	localStorage.setItem('threadIdsToHide', JSON.stringify(HIDE_THREADS.ids));
 }
 function addIgnoreButtons(threadList) {
 	threadList.forEach(thread => {
