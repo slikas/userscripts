@@ -72,7 +72,7 @@ async function getThreadIdsFromPtanw_BY_ASYNC() {
 function getThreadInfo(thread) {
 	return {
 		id: thread.classList[thread.classList.length - 1].split('-')[2],
-		title : thread.querySelector('a[data-preview-url]').textContent.container,
+		title : thread.querySelector('a[data-preview-url]').textContent,
 		url : thread.querySelector('a[data-preview-url]').href,
 		container : thread
 	}
