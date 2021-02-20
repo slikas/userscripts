@@ -4,7 +4,6 @@
 // @version      
 // @noframes
 // ==/UserScript==
-colorizeVerticalBorders(document.body)
 const selector_postBody = 'div.block-body.js-replyNewMessageContainer';
 const selector_threadList = 'div.structItemContainer-group.js-threadList';
 const selector_pageNav = isMobile() ? '.pageNavSimple' : '.pageNav  ';
