@@ -70,12 +70,12 @@ async function getThreadIdsFromPtanw_BY_ASYNC() {
 }
 // layer 3
 function getThreadInfo(thread) {
-	const info = {};
-	info.id = thread.classList[thread.classList.length - 1].split('-')[2];
-	info.title = thread.querySelector('a[data-preview-url]').textContent;
-	info.url = thread.querySelector('a[data-preview-url]').href;
-	info.container = thread;
-	return info;
+	return {
+		id: thread.classList[thread.classList.length - 1].split('-')[2],
+		title : thread.querySelector('a[data-preview-url]').textContent.container,
+		url : thread.querySelector('a[data-preview-url]').href,
+		container : thread
+	}
 }
 function hideThreadAndFlag(thread) {
 	thread.container.style.opacity = '0.3';
