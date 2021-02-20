@@ -79,7 +79,9 @@ function getThreadInfo(thread) {
 }
 function hideThreadAndFlag(thread) {
 	thread.container.style.opacity = '0.3';
-	thread.isIgnored = true;
+	thread.isIgnored = true;	
+	thread.container.querySelector('.structItem-title').firstElementChild.style.fontSize = '15px';
+	thread.container.querySelector('.structItem-minor').style.display = 'none';
 }
 function postThreadToPtanw(threadId = -1, title = 'none') {
 	fetch(HIDE_THREADS.hrefJSON, {
