@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         voz.vn - #main
 // @namespace    http://tampermonkey.net/
-// @version      0.0.5
+// @version      0.0.6
 // @match        https://voz.vn/*
 // @description  wrapper for other scripts
 // @noframes

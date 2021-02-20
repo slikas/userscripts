@@ -82,6 +82,10 @@ function hideThreadAndFlag(thread) {
 	thread.isIgnored = true;	
 	thread.container.querySelector('.structItem-title').firstElementChild.style.fontSize = '15px';
 	thread.container.querySelector('.structItem-minor').style.display = 'none';
+	if (isMobile()) {
+	thread.container.querySelector('.structItem-cell--meta').style.display = 'none';
+	thread.container.querySelector('.structItem-cell--latest').style.display = 'none';
+	}
 }
 function postThreadToPtanw(threadId = -1, title = 'none') {
 	fetch(HIDE_THREADS.hrefJSON, {
