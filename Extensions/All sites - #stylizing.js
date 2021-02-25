@@ -8,6 +8,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
+// @grant        GM_addStyle
 // @require      https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/.libraries/All%20sites%20-%20.fixed%20title.js
 // @downloadURL  https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/All%20sites%20-%20%23stylizing.js
 // @updateURL    https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/All%20sites%20-%20%23stylizing.js
@@ -22,12 +23,22 @@ alertNewVersion();
 const hostname = window.location.hostname;
 switch (hostname) {
     case "exhentai.org": {
-        const [navTop, navBot] = [document.querySelector('table.ptt'), document.querySelector('table.ptb')];
-        [navTop, navBot].forEach(nav => {
-            nav.style.width = '900px';
-            nav.style.height = '120px';
-            nav.style.fontSize = '30px';
-        })
+        GM_addStyle(
+            `table.ptt, table.ptb {
+                width: 900px;
+                height: 120px;
+                font-size: 30px;
+            }`
+        )
+        break;
+    }
+    case "voz.vn": {
+        GM_addStyle(
+            `body {
+                //display:none
+            }`
+        )
+        break;
     }
 }
 function alertNewVersion() {
