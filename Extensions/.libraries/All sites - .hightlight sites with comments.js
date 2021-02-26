@@ -12,30 +12,30 @@ SITES_WITH_COMMENTS = [
     'theguardian.com', 'nytimes.com', 'washingtonpost.com', 'dailymail.co.uk', 'abcnews.go.com'
 ]
 SITES_WITHOUT_COMMENTS = [
-    'nhandan.com.vn', 'congan.com.vn', 'plo.vn', 'baochinhphu.vn', 'ttbc-hcm.gov.vn',
-    'channelnewsasia.com', 'todayonline.com', 'nbcnews.com'
+    'nhandan.com.vn', 'congan.com.vn', 'plo.vn', 'baochinhphu.vn', 'ttbc-hcm.gov.vn', 'thuvienphapluat.vn',
+    'channelnewsasia.com', 'todayonline.com', 'nbcnews.com',
+    'japantimes.co.jp'
 ]
 SITE_INACTIVE_COMMENTS = [
     'vietnamnet.vn', 'tienphong.vn', 'dantri.com.vn'
 ]
-document.querySelectorAll('#rso>div').forEach(result => {
-    const site = new URL(result.querySelector('a').href).hostname.replace('www.', '');
-    if (hasComments(site) == 'yes') {
-        result.style.backgroundColor = 'rgb(109 65 65)';
-		result.style.fontWeight = 'bold';
-		result.style.fontStyle = 'italic';
-        // mobile
-        result.firstElementChild.style.backgroundColor = 'rgb(109 65 65)';
-		result.firstElementChild.style.fontWeight = 'bold';
-		result.firstElementChild.style.fontStyle = 'italic';
-    } else if (hasComments(site) == 'no') {
-        //result.style.backgroundColor = 'black';
-		result.style.opacity = 0.5;
-        result.firstElementChild.style.opacity = 0.5;
-    } else{
-		result.style.opacity = 0.8;
-        result.firstElementChild.style.opacity = 0.9;
-	}
+document.querySelectorAll('#rso>div' + (isMobile() ? '>:first-child' : '')).forEach(result => {
+    switch (hasComments(new URL(result.querySelector('a').href).hostname.replace('www.', ''))) {
+        case 'yes': {
+            result.style.backgroundColor = 'rgb(109 65 65)';
+            result.style.fontWeight = 'bold';
+            result.style.fontStyle = 'italic';
+            break;
+        }
+        case 'no': {
+            result.style.opacity = 0.7;
+            break;
+        }
+        case 'inactive': {
+            result.style.opacity = 1;
+            break;
+        }
+    }
 })
 
 // helpers
@@ -46,8 +46,8 @@ function hasComments(site) {
     else return 'unsure';
 }
 function isMobile() {
-	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-		return true;
-	}
-	return false;
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+    }
+    return false;
 }
