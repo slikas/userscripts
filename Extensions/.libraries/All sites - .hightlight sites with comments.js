@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites- .highlight sites with comments
 // @namespace    http://tampermonkey.net/
-// @include      *://*.google.*/*
+// @match        *://*/*
 // @exclude
 // @noframes
 // ==/UserScript==

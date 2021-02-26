@@ -3,7 +3,6 @@
 // @namespace    http://tampermonkey.net/
 // @match        *://*/*
 // @exclude      *://*.pythonanywhere.com/*
-// @exclude      *://*.google.com/*
 // @exclude      *://*.netflix.com/*
 // @exclude      *://*.github.com/*
 // @noframes
