@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         All sites- .highlight sites with comments
 // @namespace    http://tampermonkey.net/
+// @version      0.0.1
 // @match        *://*/*
 // @exclude
 // @noframes
 // ==/UserScript==
 /* eslint-disable no-implicit-globals, no-undef */
 console.log('hightlight sites with coomments');
+alertNewVersion();
 SITES_WITH_COMMENTS = [
     'vnexpress.net', 'tuoitre.vn', 'vtc.vn', 'thanhnien.vn',
     'theguardian.com', 'nytimes.com', 'washingtonpost.com', 'dailymail.co.uk', 'abcnews.go.com'
@@ -50,4 +52,13 @@ function isMobile() {
         return true;
     }
     return false;
+}
+function alertNewVersion() {
+    const currentVersion = GM_getValue('scriptVersion') || '0';
+    const latestVersion = GM_info.script.version;
+    if (latestVersion > currentVersion) {
+        GM_setValue('scriptVersion', latestVersion);
+        alert('Script: ' + GM_info.script.name +
+            '\nNew version: ' + latestVersion);
+    }
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.0.9
+// @version      0.1.0
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
