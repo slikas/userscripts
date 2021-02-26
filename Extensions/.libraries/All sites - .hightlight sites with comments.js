@@ -23,18 +23,30 @@ document.querySelectorAll('#rso>div').forEach(result => {
         result.style.backgroundColor = 'rgb(109 65 65)';
 		result.style.fontWeight = 'bold';
 		result.style.fontStyle = 'italic';
+        // mobile
+        result.firstElementChild.style.backgroundColor = 'rgb(109 65 65)';
+		result.firstElementChild.style.fontWeight = 'bold';
+		result.firstElementChild.style.fontStyle = 'italic';
     } else if (hasComments(site) == 'no') {
         //result.style.backgroundColor = 'black';
-		result.style.opacity = 0.3;
+		result.style.opacity = 0.5;
+        result.firstElementChild.style.opacity = 0.5;
     } else{
 		result.style.opacity = 0.8;
+        result.firstElementChild.style.opacity = 0.9;
 	}
 })
 
-
+// helpers
 function hasComments(site) {
     if (SITES_WITH_COMMENTS.includes(site)) return 'yes';
     if (SITES_WITHOUT_COMMENTS.includes(site)) return 'no';
     if (SITE_INACTIVE_COMMENTS.includes(site)) return 'inactive';
     else return 'unsure';
+}
+function isMobile() {
+	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		return true;
+	}
+	return false;
 }
