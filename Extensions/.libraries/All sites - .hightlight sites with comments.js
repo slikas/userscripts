@@ -21,25 +21,29 @@ SITES_WITHOUT_COMMENTS = [
 SITE_INACTIVE_COMMENTS = [
     'vietnamnet.vn', 'tienphong.vn', 'dantri.com.vn'
 ]
-document.querySelectorAll('#rso>div' + (isMobile() ? '>:first-child' : '')).forEach(result => {
-    switch (hasComments(new URL(result.querySelector('a').href).hostname.replace('www.', ''))) {
-        case 'yes': {
-            result.style.backgroundColor = 'rgb(109 65 65)';
-            result.style.fontWeight = 'bold';
-            result.style.fontStyle = 'italic';
-            break;
-        }
-        case 'no': {
-            result.style.opacity = 0.7;
-            break;
-        }
-        case 'inactive': {
-            result.style.opacity = 1;
-            break;
-        }
-    }
-})
 
+hightlightSites(document.body);
+
+function hightlightSites(sourceHTML) {
+    sourceHTML.querySelectorAll('#rso>div' + (isMobile() ? '>:first-child' : '')).forEach(result => {
+        switch (hasComments(new URL(result.querySelector('a').href).hostname.replace('www.', ''))) {
+            case 'yes': {
+                result.style.backgroundColor = 'rgb(109 65 65)';
+                result.style.fontWeight = 'bold';
+                result.style.fontStyle = 'italic';
+                break;
+            }
+            case 'no': {
+                result.style.opacity = 0.7;
+                break;
+            }
+            case 'inactive': {
+                result.style.opacity = 1;
+                break;
+            }
+        }
+    })
+}
 // helpers
 function hasComments(site) {
     if (SITES_WITH_COMMENTS.includes(site)) return 'yes';
@@ -54,9 +58,7 @@ function isMobile() {
     return false;
 }
 function alertNewVersion() {
-    const currentVersion = GM_getValue('scriptVersion') || '0';
-    const latestVersion = GM_info.script.version;
-    if (latestVersion > currentVersion) {
+    if (GM_info.script.version > (currentVersion = GM_getValue('scriptVersion') || '0')) {
         GM_setValue('scriptVersion', latestVersion);
         alert('Script: ' + GM_info.script.name +
             '\nNew version: ' + latestVersion);
