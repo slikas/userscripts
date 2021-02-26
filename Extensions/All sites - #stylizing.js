@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.0.3
+// @version      0.0.4
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -10,6 +10,7 @@
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
 // @require      https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/.libraries/All%20sites%20-%20.fixed%20title.js
+// @require      https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/.libraries/All%20sites%20-%20.hightlight%20sites%20with%20comments.js
 // @downloadURL  https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/All%20sites%20-%20%23stylizing.js
 // @updateURL    https://raw.githubusercontent.com/slikas/userscripts/main/Extensions/All%20sites%20-%20%23stylizing.js
 // ==/UserScript==
@@ -19,7 +20,6 @@ styles.debug = 'color: blue';
 styles.log = 'color:green';
 colorizeVerticalBorders(document.body);
 alertNewVersion();
-
 const hostname = window.location.hostname;
 switch (hostname) {
     case "exhentai.org": {
