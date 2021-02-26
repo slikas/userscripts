@@ -6,6 +6,7 @@
 // @noframes
 // ==/UserScript==
 /* eslint-disable no-implicit-globals, no-undef */
+console.log('hightlight sites with coomments');
 SITES_WITH_COMMENTS = [
     'vnexpress.net', 'tuoitre.vn', 'vtc.vn', 'thanhnien.vn',
     'theguardian.com', 'nytimes.com', 'washingtonpost.com', 'dailymail.co.uk', 'abcnews.go.com'

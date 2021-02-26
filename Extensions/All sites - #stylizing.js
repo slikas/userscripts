@@ -18,6 +18,7 @@ const CSS_COLOR_NAMES = ['red', 'blue', 'yellow', 'green', 'pink', 'orange', 'in
 const styles = {};
 styles.debug = 'color: blue';
 styles.log = 'color:green';
+console.debug('%c#userscript: %s', styles.debug, GM_info.script.name);
 colorizeVerticalBorders(document.body);
 alertNewVersion();
 const hostname = window.location.hostname;
