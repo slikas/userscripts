@@ -24,24 +24,28 @@ function addIgnoreButtons(sourceHTML) {
     const post = {};
     switch (location.hostname) {
         case 'songmeanings.com': {
-            post.containerList = document.querySelectorAll('#comments-list > li');
+            postList = document.querySelectorAll('#comments-list > li');
             break;
         }
         case 'voz.vn': {
-            post.containerList = document.querySelectorAll('.structItem-cell.structItem-cell--meta');
+            postList = document.querySelectorAll('.structItem-cell.structItem-cell--meta');
+            break;
+        }
+        case 'vnexpress.net': {
+            postList = document.querySelectorAll('p.block_like_web.width_common');
             break;
         }
     }
     // Apply to all
-    post.containerList.forEach(container => {
+    postList.forEach(post => {
         const button = createButton();
-        container.prepend(button);
-        button.addEventListener('click', callback.bind(event, container));
+        post.prepend(button);
+        button.addEventListener('click', callback.bind(event, post));
     })
 
     // helpers
-    function callback(container) {
-        hidePost(container);
+    function callback(post) {
+        hidePost(post);
     }
     function createButton() {
         const button = document.createElement('button');
