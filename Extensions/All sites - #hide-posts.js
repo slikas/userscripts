@@ -12,8 +12,9 @@
 // ==/UserScript==
 /* global shortenToWords */
 HIDE_POSTS = {}
+HIDE_POSTS.hostname = window.location.hostname.replace('www.', '');
 HIDE_POSTS.hrefJSON_host = 'https://climex.pythonanywhere.com/json/get-post-ids/';
-HIDE_POSTS.hrefJSON_full = new URL(location.hostname, HIDE_POSTS.hrefJSON_host).href;
+HIDE_POSTS.hrefJSON_full = new URL(HIDE_POSTS.hostname, HIDE_POSTS.hrefJSON_host).href;
 HIDE_POSTS.ids = [];
 
 hidePostsAndAddIgnoreButtons(document.body);
@@ -23,7 +24,7 @@ function hidePostsAndAddIgnoreButtons(sourceHTML) {
 function addIgnoreButtons(sourceHTML) {
     const post = {};
     let postList = [];
-    switch (location.hostname) {
+    switch (HIDE_POSTS.hostname) {
         case 'songmeanings.com': {
             postList = document.querySelectorAll('#comments-list > li');
             break;
@@ -75,7 +76,7 @@ async function postIdToPtanw(id) {
     const response = await fetch(HIDE_POSTS.hrefJSON_full);
 }
 function getPostId(post) {
-    switch (location.hostname) {
+    switch (HIDE_POSTS.hostname) {
         case 'songmeanings.com': {
             return post.querySelector('a[name^="comment-"]').name.split('-')[1];
         }
