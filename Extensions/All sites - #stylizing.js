@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.4
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -46,7 +46,7 @@ switch (hostname) {
     }
     case 'songmeanings.com': {
         elementsToHide.desktop = ['#sidebar', '#footer', '#content>div:last-child',
-            '.main-holder>div:first-child', '.holder.sign-box', '.login', '#header>:nth-child(2)',
+             '.login', '#header>:nth-child(2)', '.main-holder>div:first-child:not(.main-frame)', '.holder.sign-box',
             '.block-heading', '.login-holder', 'a[href="#addcomment"]' ,'.holder.lyric-box>div:last-of-type'
         ];
         break;
