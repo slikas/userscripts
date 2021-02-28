@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.0
+// @version      0.1.1
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -39,6 +39,12 @@ switch (hostname) {
                 //display:none
             }`
         )
+        break;
+    }
+    case "vnexpress.net": {
+        GM_addStyle(`
+            #footer, #same_category { display:none}
+        `)
         break;
     }
 }
