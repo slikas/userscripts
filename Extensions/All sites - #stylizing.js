@@ -36,6 +36,7 @@ switch (hostname) {
         break;
     }
     case "voz.vn": {
+        elementsToHide.desktop = ['.structItem-cell.structItem-cell--latest > div']
         break;
     }
     case "vnexpress.net": {
