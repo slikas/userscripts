@@ -22,6 +22,7 @@ function hidePostsAndAddIgnoreButtons(sourceHTML) {
 }
 function addIgnoreButtons(sourceHTML) {
     const post = {};
+    let postList = [];
     switch (location.hostname) {
         case 'songmeanings.com': {
             postList = document.querySelectorAll('#comments-list > li');
@@ -54,7 +55,6 @@ function addIgnoreButtons(sourceHTML) {
         return button;
     }
 }
-
 function hidePost(post) {
     post.style.opacity = 0.3;
     post.style.maxHeight = '50px';

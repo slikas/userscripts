@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.4
+// @version      0.1.5
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -21,10 +21,9 @@ styles.log = 'color:green';
 console.debug('%c#userscript: %s', styles.debug, GM_info.script.name);
 colorizeVerticalBorders(document.body);
 alertNewVersion();
-const hostname = window.location.hostname;
 const elementsToHide = {};
 [elementsToHide.mobile, elementsToHide.desktop] = [[], []];
-switch (hostname) {
+switch (location.hostname.replace('www.', '')) {
     case "exhentai.org": {
         GM_addStyle(`
             table.ptt, table.ptb {
@@ -46,9 +45,17 @@ switch (hostname) {
     }
     case 'songmeanings.com': {
         elementsToHide.desktop = ['#sidebar', '#footer', '#content>div:last-child',
-             '.login', '#header>:nth-child(2)', '.main-holder>div:first-child:not(.main-frame)', '.holder.sign-box',
-            '.block-heading', '.login-holder', 'a[href="#addcomment"]' ,'.holder.lyric-box>div:last-of-type'
+            '.login', '#header>:nth-child(2)', '.main-holder>div:first-child:not(.main-frame)', '.holder.sign-box',
+            '.block-heading', '.login-holder', 'a[href="#addcomment"]', '.holder.lyric-box>div:last-of-type'
         ];
+        break;
+    }
+    case 'theguardian.com': {
+        elementsToHide.desktop = ['#sticky-nav-root', '#most-viewed-footer', 'footer[data-link-name="footer"][data-component="footer"]'];
+        elementsToHide.mobile = ['sticky-nav-root'];
+        setTimeout( ()=>{
+            document.body.append(document.querySelector('div[data-component="related-stories"]'));
+        }, 2000)
         break;
     }
 }
