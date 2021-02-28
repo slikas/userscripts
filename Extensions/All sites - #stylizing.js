@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.5
+// @version      0.1.6
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -53,9 +53,22 @@ switch (location.hostname.replace('www.', '')) {
     case 'theguardian.com': {
         elementsToHide.desktop = ['#sticky-nav-root', '#most-viewed-footer', 'footer[data-link-name="footer"][data-component="footer"]'];
         elementsToHide.mobile = ['sticky-nav-root'];
-        setTimeout( ()=>{
-            document.body.append(document.querySelector('div[data-component="related-stories"]'));
-        }, 2000)
+        // wait until related stories section completes and move to the bottom of document body
+        const target = document.querySelector('#onwards-upper-whensignedout');
+        const config = {
+            childList: true,
+			subtree: true
+        };
+        const callback = function (mutationsList, observer) {
+            for (const mutation of mutationsList) {
+                if(document.querySelector('div[data-component="related-stories"]')){
+                    document.body.append(target);
+                    observer.disconnect();
+                }
+            }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(target, config);
         break;
     }
 }
