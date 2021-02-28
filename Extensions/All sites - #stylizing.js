@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.1
+// @version      0.1.3
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -22,32 +22,37 @@ console.debug('%c#userscript: %s', styles.debug, GM_info.script.name);
 colorizeVerticalBorders(document.body);
 alertNewVersion();
 const hostname = window.location.hostname;
+const elementsToHide = {};
+[elementsToHide.mobile, elementsToHide.desktop] = [[], []];
 switch (hostname) {
     case "exhentai.org": {
-        GM_addStyle(
-            `table.ptt, table.ptb {
+        GM_addStyle(`
+            table.ptt, table.ptb {
                 width: 900px;
                 height: 120px;
                 font-size: 30px;
-            }`
-        )
-        break;
-    }
-    case "voz.vn": {
-        GM_addStyle(
-            `body {
-                //display:none
-            }`
-        )
-        break;
-    }
-    case "vnexpress.net": {
-        GM_addStyle(`
-            #footer, #same_category { display:none}
+            }
         `)
         break;
     }
+    case "voz.vn": {
+        break;
+    }
+    case "vnexpress.net": {
+        elementsToHide.mobile = ['#footer', '#same_category'];
+        elementsToHide.desktop = ['.footer', '.box-category__list-news'];
+        break;
+    }
+    case 'songmeanings.com': {
+        elementsToHide.desktop = ['#sidebar', '#footer', '#content>div:last-child',
+            '.main-holder>div:first-child', '.holder.sign-box', '.login', '#header>:nth-child(2)',
+            '.block-heading', '.login-holder', 'a[href="#addcomment"]' ,'.holder.lyric-box>div:last-of-type'
+        ];
+        break;
+    }
 }
+GM_addStyle((elementsToHide.mobile.concat(elementsToHide.desktop)).join() + '{display:none}');
+
 function alertNewVersion() {
     const currentVersion = GM_getValue('scriptVersion') || '0';
     const latestVersion = GM_info.script.version;
