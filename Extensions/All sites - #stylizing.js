@@ -54,7 +54,7 @@ switch (location.hostname.replace('www.', '')) {
         elementsToHide.desktop = ['#sticky-nav-root', '#most-viewed-footer', 'footer[data-link-name="footer"][data-component="footer"]'];
         elementsToHide.mobile = ['sticky-nav-root'];
         // wait until related stories section completes and move to the bottom of document body
-        const target = document.querySelector('#onwards-upper-whensignedout');
+        const target = document.body;
         const config = {
             childList: true,
 			subtree: true
@@ -62,7 +62,7 @@ switch (location.hostname.replace('www.', '')) {
         const callback = function (mutationsList, observer) {
             for (const mutation of mutationsList) {
                 if(document.querySelector('div[data-component="related-stories"]')){
-                    document.body.append(target);
+                    document.body.append(document.querySelector('#onwards-upper-whensignedout'));
                     observer.disconnect();
                 }
             }
