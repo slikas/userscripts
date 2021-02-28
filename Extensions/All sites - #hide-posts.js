@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #hide-posts
 // @namespace    http://tampermonkey.net/
-// @version      0.0.3
+// @version      0.0.4
 // @match        *://*/*
 // @exclude      111  https://voz.vn/f/*
 // @noframes
@@ -16,30 +16,34 @@ HIDE_POSTS.hostname = window.location.hostname.replace('www.', '');
 HIDE_POSTS.hrefJSON_host = 'https://climex.pythonanywhere.com/json/get-post-ids/';
 HIDE_POSTS.hrefJSON_full = new URL(HIDE_POSTS.hostname, HIDE_POSTS.hrefJSON_host).href;
 HIDE_POSTS.ids = [];
-
+HIDE_POSTS.postList = [];
 hidePostsAndAddIgnoreButtons(document.body);
 function hidePostsAndAddIgnoreButtons(sourceHTML) {
     addIgnoreButtons(sourceHTML);
 }
 function addIgnoreButtons(sourceHTML) {
-    const post = {};
-    let postList = [];
     switch (HIDE_POSTS.hostname) {
         case 'songmeanings.com': {
-            postList = document.querySelectorAll('#comments-list > li');
+            HIDE_POSTS.postList = document.querySelectorAll('#comments-list > li');
             break;
         }
         case 'voz.vn': {
-            postList = document.querySelectorAll('.structItem-cell.structItem-cell--meta');
+            HIDE_POSTS.postList = document.querySelectorAll('.structItem-cell.structItem-cell--meta');
             break;
         }
         case 'vnexpress.net': {
-            postList = document.querySelectorAll('p.block_like_web.width_common');
+            HIDE_POSTS.postList = document.querySelectorAll('p.block_like_web.width_common');
+            break;
+        }
+        case 'theguardian.com': {
+            setTimeout( ()=>{
+                HIDE_POSTS.postList = document.querySelectorAll('div[id^="comment-"][data-testid]');
+            },2000);
             break;
         }
     }
     // Apply to all
-    postList.forEach(post => {
+    HIDE_POSTS.postList.forEach(post => {
         const button = createButton();
         post.prepend(button);
         button.addEventListener('click', callback.bind(event, post));
@@ -48,6 +52,7 @@ function addIgnoreButtons(sourceHTML) {
     // helpers
     function callback(post) {
         hidePost(post);
+        alert(getPostId(post));
     }
     function createButton() {
         const button = document.createElement('button');
@@ -82,6 +87,9 @@ function getPostId(post) {
         }
         case 'voz.vn': {
             return post.querySelector('div[class*="js-threadListItem-"]').name.split('-')[1];
+        }
+        case 'theguardian.com':{
+            return post.querySelector('div[id^="comment-"][data-testid]').id.split('-')[1];
         }
     }
 }
