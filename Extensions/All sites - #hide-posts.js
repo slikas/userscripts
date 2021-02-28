@@ -67,3 +67,34 @@ function alertNewVersion() {
             '\nNew version: ' + latestVersion);
     }
 }
+async function postIdToPtanw(id) {
+    const response = await fetch(HIDE_POSTS.hrefJSON_full);
+}
+function getPostId(post) {
+    switch (location.hostname) {
+        case 'songmeanings.com': {
+            return post.querySelector('a[name^="comment-"]').name.split('-')[1];
+        }
+        case 'voz.vn': {
+            return post.querySelector('div[class*="js-threadListItem-"]').name.split('-')[1];
+        }
+    }
+}
+
+function postThreadToPtanw(threadId = -1, title = 'none') {
+    fetch(HIDE_THREADS.hrefJSON, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            thread_id: parseInt(threadId),
+            title: shortenToWords(title, 30)
+        })
+    }).then(response => {
+        return response.json()
+    }).then(data => {
+        console.log(data);
+    });
+}
