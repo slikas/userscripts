@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.6
+// @version      0.1.7
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -35,7 +35,16 @@ switch (location.hostname.replace('www.', '')) {
         break;
     }
     case "voz.vn": {
-        elementsToHide.desktop = ['.structItem-cell.structItem-cell--latest > div']
+        elementsToHide.desktop = ['.structItem-cell.structItem-cell--latest > div', 'a[title="Bookmark"]',
+								 'a[title="Toggle multi-quote"]'];
+		document.querySelectorAll('a[class="avatar avatar--m"]').forEach(link_avatar =>{
+			link_avatar.firstElementChild.style.visibility = 'visible';
+			link_avatar.style.visibility = 'hidden';
+		});
+		document.querySelectorAll('time[itemprop="datePublished"]').forEach(time_datePublished=>{
+			time_datePublished.style.visibility = 'visible';
+			time_datePublished.parentElement.style.visibility = 'hidden';
+		});
         break;
     }
     case "vnexpress.net": {
