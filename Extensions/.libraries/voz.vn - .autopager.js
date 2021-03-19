@@ -38,7 +38,13 @@ function appendNextPage(nextPageHtml, selector) {
 	
 
 	document.querySelector(selector).append('-----NEXT PAGE----');
+	nextPage.style.opacity = '0.1';
+	nextPage.style.transitionDuration = '4s';
 	document.querySelector(selector).appendChild(nextPage);
+	setTimeout(()=>{
+        nextPage.style.opacity = '1';
+	}, 1000)
+
 	colorizeVerticalBorders(nextPage);
 
 	hideThreadsAndAddIgnoreButtons(nextPage);
