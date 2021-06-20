@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         All sites - #stylizing
 // @namespace    http://tampermonkey.net/
-// @version      0.1.8
+// @version      0.1.9
 // @match        *://*/*
 // @description  things like border color for document.body
 // @noframes
@@ -36,8 +36,8 @@ switch (location.hostname.replace('www.', '')) {
 	}
 
 	case "voz.vn": {
-		elementsToHide.desktop = ['.structItem-cell.structItem-cell--latest > div', 'a[title="Bookmark"]',
-								  'a[title="Toggle multi-quote"]'];
+		elementsToHide.desktop = ['.structItem-cell.structItem-cell--latest > div', 'a[title="Bookmark"]', 'a[title="Toggle multi-quote"]', 'div.u-bottomFixer.js-bottomFixTarget'
+];
 		document.querySelectorAll('a[class="avatar avatar--m"]').forEach(link_avatar =>{
 			link_avatar.firstElementChild.style.visibility = 'visible';
 			link_avatar.style.visibility = 'hidden';
